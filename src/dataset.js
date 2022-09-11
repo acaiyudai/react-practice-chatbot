@@ -6,7 +6,7 @@ const defaultDataset = {
             {content: "学習コミュニティについて知りたい", nextId: "community"},
             {content: "お付き合いしたい", nextId: "dating"},
         ],
-        question: "こんにちは！アイリーンへのご用件はなんでしょうか？",
+        question: "こんにちは！私へのご用件はなんでしょうか？",
     },
     "job_offer": {
         answers: [
@@ -51,7 +51,7 @@ const defaultDataset = {
             {content: "学習コミュニティについて知りたい", nextId: "community"},
             {content: "最初の質問に戻る", nextId: "init"}
         ],
-        question: "アイリーンは普段からYouTubeでキャリアについて発信しています。また、僕が運営するエンジニア向け学習コミュニティ内でも相談に乗っていますよ。",
+        question: "私は普段からYouTubeでキャリアについて発信しています。また、僕が運営するエンジニア向け学習コミュニティ内でも相談に乗っていますよ。",
     },
     "community": {
         answers: [
