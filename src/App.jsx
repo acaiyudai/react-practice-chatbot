@@ -3,7 +3,7 @@ import React from 'react';
 import { Component } from 'react';
 import defaultDataset from './dataset'
 import {AnswersList, Chats} from './components/index';
-
+import {FormDialog} from './components/forms/index'
 
 
 class App extends Component {
@@ -18,6 +18,8 @@ class App extends Component {
     }
 
     this.selectAnswer = this.selectAnswer.bind(this);
+    this.handleClickOpen = this.handleClickOpen.bind(this);
+    this.handleClickClose = this.handleClickClose.bind(this);
   }
 
   initAnswer = () => {
@@ -58,6 +60,10 @@ class App extends Component {
         a.target = '_blank'; // リンク先をブラウザの別タグで表示させる属性
         a.click();
         break;
+
+        case (nextQuestionId === 'contact'):
+          this.handleClickOpen();
+          break;
       
       default:
         const chats = this.state.chats;
@@ -89,7 +95,17 @@ class App extends Component {
     });
   }
 
-  
+  handleClickOpen = () => {
+    this.setState({
+        open: true
+    });
+  }
+  handleClickClose = () => {
+    this.setState({
+        open: false
+    });
+  }
+
 
   componentDidMount(){
     const initAnswer ='';
@@ -109,6 +125,7 @@ class App extends Component {
         <div className='c-box'>
           <Chats chats={this.state.chats} />
           <AnswersList answers={this.state.answers} select={this.selectAnswer} />
+          <FormDialog open={this.state.open} handleClose={this.handleClickClose} />
         </div>
       </section>
     );
