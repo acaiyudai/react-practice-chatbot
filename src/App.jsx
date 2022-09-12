@@ -48,8 +48,17 @@ class App extends Component {
   selectAnswer = (selectedAnswer, nextQuestionId) => {
     switch(true) {
       case (nextQuestionId === 'init'):
-        this.displayNextQuestion(nextQuestionId);
+        setTimeout(() => this.displayNextQuestion(nextQuestionId), 500);
         break;
+
+      case (/^https:*/.test(nextQuestionId)):
+      // nextQuestionIdがhttpsから始まる場合, 外部リンクへ飛ばす
+        const a = document.createElement('a');
+        a.href = nextQuestionId;
+        a.target = '_blank'; // リンク先をブラウザの別タグで表示させる属性
+        a.click();
+        break;
+      
       default:
         const chats = this.state.chats;
         chats.push({
@@ -61,7 +70,7 @@ class App extends Component {
           chats: chats
         });
 
-        this.displayNextQuestion(nextQuestionId);
+        setTimeout(() => this.displayNextQuestion(nextQuestionId), 1000);
         break;
     }
   }
@@ -80,9 +89,18 @@ class App extends Component {
     });
   }
 
+  
+
   componentDidMount(){
     const initAnswer ='';
     this.selectAnswer(initAnswer, this.state.currentId);
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot){
+    const scrollArea = document.getElementById('scroll-area');
+    if (scrollArea) {
+      scrollArea.scrollTop = scrollArea.scrollHeight;
+    }
   }
 
   render(){

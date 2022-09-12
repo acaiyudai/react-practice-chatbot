@@ -47,7 +47,7 @@ const defaultDataset = {
     },
     "consultant": {
         answers: [
-            {content: "YouTubeで動画を見る", nextId: "https://www.youtube.com/channel/UC-bOAxx-YOsviSmqh8COR0w"},
+            {content: "YouTubeで動画を見る", nextId: "https://www.youtube.com/watch?v=QslJYDX3o8s"},
             {content: "学習コミュニティについて知りたい", nextId: "community"},
             {content: "最初の質問に戻る", nextId: "init"}
         ],
