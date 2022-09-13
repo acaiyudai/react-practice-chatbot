@@ -1,56 +1,24 @@
 import './assets/styles/style.css'
+import defaultDataset from './dataset';
 import React from 'react';
-import { Component } from 'react';
-import defaultDataset from './dataset'
 import {AnswersList, Chats} from './components/index';
 import {FormDialog} from './components/forms/index'
+import { useState, useEffect, useCallback } from 'react';
 
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      answers: [],
-      chats: [],
-      currentId: 'init',
-      dataset: defaultDataset,
-      open: false
-    }
+const App = () => {
+   const [answers, setAnswers] = useState([]);
+   const [chats, setChats] = useState([]);
+   const [currentId, setCurrentId] = useState("init");
+   const [dataset, setDataset] = useState(defaultDataset);
+   const [open, setOpen] = useState(false);
 
-    this.selectAnswer = this.selectAnswer.bind(this);
-    this.handleClickOpen = this.handleClickOpen.bind(this);
-    this.handleClickClose = this.handleClickClose.bind(this);
-  }
 
-  initAnswer = () => {
-    const initDataset = this.state.dataset[this.state.currentId];
-    const initAnswers = initDataset.answers;
-    this.setState({
-      answers: initAnswers
-    });
-  }
-
-  initChats = () => {
-    const initDataset = this.state.dataset[this.state.currentId];
-    const chat = {
-      text:initDataset.question,
-      type: 'question'
-    }
-
-    const chats = this.state.chats;
-    chats.push(chat);
-
-    this.setState({
-      chats: chats
-    });
-
-    console.log(chats);
-  }
-
-  selectAnswer = (selectedAnswer, nextQuestionId) => {
+   const selectAnswer = (selectedAnswer, nextQuestionId) => {
     switch(true) {
       case (nextQuestionId === 'init'):
-        setTimeout(() => this.displayNextQuestion(nextQuestionId), 500);
+        console.log(nextQuestionId);
+        setTimeout(() => displayNextQuestion(nextQuestionId, dataset[nextQuestionId]), 500);
         break;
 
       case (/^https:*/.test(nextQuestionId)):
@@ -62,74 +30,67 @@ class App extends Component {
         break;
 
         case (nextQuestionId === 'contact'):
-          this.handleClickOpen();
+          handleClickOpen();
           break;
       
       default:
-        const chats = this.state.chats;
-        chats.push({
+        addChats({
           text: selectedAnswer,
-          type: 'answer'
+          type: "answer"
         });
-    
-        this.setState({
-          chats: chats
-        });
-
-        setTimeout(() => this.displayNextQuestion(nextQuestionId), 1000);
+        setTimeout(() => displayNextQuestion(nextQuestionId, dataset[nextQuestionId]), 1000);
         break;
     }
   }
 
-  displayNextQuestion = (nextQuestionId) => {
-    const chats = this.state.chats;
-    chats.push({
-      text: this.state.dataset[nextQuestionId].question,
+  const displayNextQuestion = (nextQuestionId, nextDataset) => {
+    addChats({
+      text: nextDataset.question,
       type: 'question'
     });
 
-    this.setState({
-      answers: this.state.dataset[nextQuestionId].answers,
-      chats: chats,
-      currentId: nextQuestionId
+    setAnswers(nextDataset.answers);
+    setCurrentId(nextQuestionId);
+  }
+
+  const addChats = (chat) => {
+    setChats(prevChats => {
+      return [...prevChats, chat];
     });
   }
 
-  handleClickOpen = () => {
-    this.setState({
-        open: true
-    });
-  }
-  handleClickClose = () => {
-    this.setState({
-        open: false
-    });
-  }
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  // 子供のコンポーネントにpropsとして関数を渡す場合には,
+  // useCallbackを使う.
+  const handleClose = useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
 
 
-  componentDidMount(){
+  useEffect(() => {
     const initAnswer ='';
-    this.selectAnswer(initAnswer, this.state.currentId);
-  }
+    selectAnswer(initAnswer, currentId);
+  }, []);
 
-  componentDidUpdate(prevProps, prevState, snapshot){
+  useEffect(() => {
     const scrollArea = document.getElementById('scroll-area');
     if (scrollArea) {
       scrollArea.scrollTop = scrollArea.scrollHeight;
     }
-  }
+  });
 
-  render(){
-    return (
-      <section className='c-section'>
-        <div className='c-box'>
-          <Chats chats={this.state.chats} />
-          <AnswersList answers={this.state.answers} select={this.selectAnswer} />
-          <FormDialog open={this.state.open} handleClose={this.handleClickClose} />
-        </div>
-      </section>
-    );
-  }
+
+  return (
+    <section className='c-section'>
+      <div className='c-box'>
+        <Chats chats={chats} />
+        <AnswersList answers={answers} select={selectAnswer} />
+        <FormDialog open={open} handleClose={handleClose} />
+      </div>
+    </section>
+  );
   
 }
 
